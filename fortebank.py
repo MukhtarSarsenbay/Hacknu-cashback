@@ -8,7 +8,7 @@ import re
 app = Flask(__name__)
 
 # Replace the following with your actual database credentials
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Botik8700@localhost:5433/cashback'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhost/template1'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
