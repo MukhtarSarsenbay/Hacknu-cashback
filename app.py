@@ -2,41 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-
-# Replace the following with your actual database credentials
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Botik8700@localhost:5433/cashback'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-
 db = SQLAlchemy(app)
-# User Model
-class User(db.Model):
-    __tablename__ = 'users'
 
-    userID = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    surname = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    address = db.Column(db.String(200))
-    phone = db.Column(db.String(20))
-
-    # Relationship to bank cards
-    bank_cards = db.relationship('BankCard', backref='owner', lazy=True)
-
-
-# Bank Card Model
-class BankCard(db.Model):
-    __tablename__ = 'bank_cards'
-
-    cardID = db.Column(db.Integer, primary_key=True)
-    bank_name = db.Column(db.String(100), nullable=False)
-    card_type = db.Column(db.String(50), nullable=False)
-    card_number = db.Column(db.String(20), nullable=False)
-    expiration_date = db.Column(db.Date, nullable=False)
-    userID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False)
-
-
-# Cashback Offers Model
+# Define the CashbackOffer model
 class CashbackOffer(db.Model):
     __tablename__ = 'cashback_offers'
 
@@ -48,9 +18,20 @@ class CashbackOffer(db.Model):
     validity = db.Column(db.Date, nullable=False)
     restrictions = db.Column(db.String(200))
 
-
-with app.app_context():
-    db.create_all()
+# Function to print the content of the cashback_offers table
+def print_cashback_offers():
+    with app.app_context():
+        offers = CashbackOffer.query.all()
+        print("Cashback Offers:")
+        for offer in offers:
+            print(f"Offer ID: {offer.offerID}")
+            print(f"Bank Name: {offer.bank_name}")
+            print(f"Category: {offer.category}")
+            print(f"Cashback Percentage: {offer.cashback_percentage}")
+            print(f"Conditions: {offer.conditions}")
+            print(f"Validity: {offer.validity}")
+            print(f"Restrictions: {offer.restrictions}")
+            print()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    print_cashback_offers()
